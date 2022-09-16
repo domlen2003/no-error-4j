@@ -61,24 +61,49 @@ public sealed abstract class Result<T> permits Err, Ok {
     }
 
     /**
-     * If the result is {@link Ok} maps the value of Ok to a new Result or returns the {@link Err}
+     * If the result is {@link Ok} maps the value of Ok to a new Value or returns the {@link Err}
      * <br><br>
      * This follows the pattern of <a href="https://blog.logrocket.com/what-is-railway-oriented-programming/">railway oriented programming.</a>
      *
      * @param mapper the function to map the value
      * @return the new Result
      */
-    public <U> @NotNull Result<U> mapOk(Function<T, Result<U>> mapper) {
-        //Use map here because the mapper contains possibly error producing code
-        return map((res) -> switch (res) {
+    public <U> @NotNull Result<U> mapOk(Function<T, U> mapper) {
+        return switch (this) {
             case Ok<T> success -> {
                 if (mapper == null) {
                     yield new Err<>(new NullPointerException("Mapper for Result.mapOk(mapper) is null"));
                 }
                 try {
-                    Result<U> result = mapper.apply(success.getValue());
+                    U result = mapper.apply(success.getValue());
                     if (result == null) {
                         yield new Err<>(new NullPointerException("Mapper for Result.mapOk(mapper) returned null"));
+                    }
+                    yield new Ok<>(result);
+                } catch (Throwable throwable) {
+                    yield new Err<>(throwable);
+                }
+            }
+            case Err<T> failure -> new Err<>(failure.getError());
+        };
+    }
+
+    /**
+     * If the result is {@link Ok} maps the value of Ok to a new Result or returns the {@link Err}
+     *
+     * @param mapper the function to map the value
+     * @return the new Result
+     */
+    public <U> @NotNull Result<U> flatMapOk(Function<T, Result<U>> mapper) {
+        return switch (this) {
+            case Ok<T> success -> {
+                if (mapper == null) {
+                    yield new Err<>(new NullPointerException("Mapper for Result.flatMapOk(mapper) is null"));
+                }
+                try {
+                    Result<U> result = mapper.apply(success.getValue());
+                    if (result == null) {
+                        yield new Err<>(new NullPointerException("Mapper for Result.flatMapOk(mapper) returned null"));
                     }
                     yield result;
                 } catch (Throwable throwable) {
@@ -86,7 +111,35 @@ public sealed abstract class Result<T> permits Err, Ok {
                 }
             }
             case Err<T> failure -> new Err<>(failure.getError());
-        });
+        };
+    }
+
+    /**
+     * If the result is {@link Err} maps the error of Err to a new Value or returns the {@link Ok}
+     * <br><br>
+     * This is the possibility to switch back into the happy path
+     *
+     * @param mapper the function to map the error
+     * @return the new Result
+     */
+    public @NotNull Result<T> mapErr(Function<Throwable, T> mapper) {
+        return switch (this) {
+            case Ok<T> success -> success;
+            case Err<T> failure -> {
+                if (mapper == null) {
+                    yield new Err<>(new NullPointerException("Mapper for Result.mapErr(mapper) is null"));
+                }
+                try {
+                    T result = mapper.apply(failure.getError());
+                    if (result == null) {
+                        yield new Err<>(new NullPointerException("Mapper for Result.mapErr(mapper) returned null"));
+                    }
+                    yield new Ok<>(result);
+                } catch (Throwable throwable) {
+                    yield new Err<>(throwable);
+                }
+            }
+        };
     }
 
     /**
@@ -97,17 +150,17 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @param mapper the function to map the error
      * @return the new Result
      */
-    public @NotNull Result<T> mapError(Function<Throwable, Result<T>> mapper) {
+    public @NotNull Result<T> flatMapErr(Function<Throwable, Result<T>> mapper) {
         return switch (this) {
             case Ok<T> success -> success;
             case Err<T> failure -> {
                 if (mapper == null) {
-                    yield new Err<>(new NullPointerException("Mapper for Result.mapError(mapper) is null"));
+                    yield new Err<>(new NullPointerException("Mapper for Result.flatMapErr(mapper) is null"));
                 }
                 try {
                     Result<T> result = mapper.apply(failure.getError());
                     if (result == null) {
-                        yield new Err<>(new NullPointerException("Mapper for Result.mapError(mapper) returned null"));
+                        yield new Err<>(new NullPointerException("Mapper for Result.flatMapError(mapper) returned null"));
                     }
                     yield result;
                 } catch (Throwable throwable) {

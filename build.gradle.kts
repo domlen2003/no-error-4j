@@ -23,7 +23,7 @@ java {
 
 
 tasks.compileJava {
-    options.javaModuleVersion.set(provider { project.version as String })
+    options.javaModuleVersion.set(provider { version as String })
     options.compilerArgs.add("--enable-preview")
 }
 
