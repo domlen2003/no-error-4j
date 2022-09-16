@@ -108,18 +108,40 @@ public sealed abstract class Option<T> permits None, Some {
     }
 
     /**
-     * Returns the current Option if it is a {@link Some}, otherwise returns the supplied Option.
+     * Returns the current Option if it is a {@link Some}, otherwise returns the supplied Value as a option.
      *
      * @param supplier the supplier to get the value from
-     * @return a {@link Some} if any of the two Options has a value, else a {@link None}
+     * @return a {@link Some} if the Option or the supplier has a value, else a {@link None}
      */
-    public @NotNull Option<? extends T> mapNone(Supplier<? extends Option<? extends T>> supplier) {
+    public @NotNull Option<T> mapNone(Supplier<T> supplier) {
         return switch (this) {
             case None<T> ignored -> {
                 if (supplier == null) {
                     yield new None<>();
                 }
-                Option<? extends T> option = supplier.get();
+                T option = supplier.get();
+                if (option == null) {
+                    yield new None<>();
+                }
+                yield new Some<>(option);
+            }
+            case Some<T> some -> some;
+        };
+    }
+
+    /**
+     * Returns the current Option if it is a {@link Some}, otherwise returns the supplied Option.
+     *
+     * @param supplier the supplier to get the value from
+     * @return a {@link Some} if any of the two Options has a value, else a {@link None}
+     */
+    public @NotNull Option<T> flatMapNone(Supplier<? extends Option<T>> supplier) {
+        return switch (this) {
+            case None<T> ignored -> {
+                if (supplier == null) {
+                    yield new None<>();
+                }
+                Option<T> option = supplier.get();
                 if (option == null) {
                     yield new None<>();
                 }
