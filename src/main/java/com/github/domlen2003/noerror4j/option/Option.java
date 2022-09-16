@@ -59,7 +59,7 @@ public sealed abstract class Option<T> permits None, Some {
      * @param mapper the mapper to apply
      * @return a new {@link Some} if the mapper, mapped-value and previous value are not null, a {@link None} otherwise
      */
-    public <U> @NotNull Option<? extends U> mapSome(Function<? super T, ? extends U> mapper) {
+    public <U> @NotNull Option<U> mapSome(Function<? super T, ? extends U> mapper) {
         return switch (this) {
             case Some<T> some -> {
                 if (mapper == null) {
@@ -86,14 +86,14 @@ public sealed abstract class Option<T> permits None, Some {
      * @param mapper the mapper to apply
      * @return a new {@link Some} if the mapper, new-option and previous-value are not null, a {@link None} otherwise
      */
-    public <U> @NotNull Option<? extends U> flatMapSome(Function<? super T, ? extends Option<? extends U>> mapper) {
+    public <U> @NotNull Option<U> flatMapSome(Function<? super T, ? extends Option<U>> mapper) {
         return switch (this) {
             case Some<T> some -> {
                 if (mapper == null) {
                     yield new None<>();
                 }
                 try {
-                    Option<? extends U> option = mapper.apply(some.getValue());
+                    Option<U> option = mapper.apply(some.getValue());
                     if (option == null) {
                         yield new None<>();
                     }
