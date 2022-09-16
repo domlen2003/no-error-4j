@@ -1,8 +1,8 @@
-package cc.notabot.noerror4j.option;
+package com.github.domlen2003.noerror4j.option;
 
-import cc.notabot.noerror4j.result.Err;
-import cc.notabot.noerror4j.result.Ok;
-import cc.notabot.noerror4j.result.Result;
+import com.github.domlen2003.noerror4j.result.Err;
+import com.github.domlen2003.noerror4j.result.Ok;
+import com.github.domlen2003.noerror4j.result.Result;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

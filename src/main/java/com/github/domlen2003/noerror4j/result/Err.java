@@ -1,4 +1,4 @@
-package cc.notabot.noerror4j.result;
+package com.github.domlen2003.noerror4j.result;
 
 public final class Err<T> extends Result<T> {
     private final Throwable error;

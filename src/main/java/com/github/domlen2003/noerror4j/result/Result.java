@@ -1,8 +1,8 @@
-package cc.notabot.noerror4j.result;
+package com.github.domlen2003.noerror4j.result;
 
-import cc.notabot.noerror4j.option.None;
-import cc.notabot.noerror4j.option.Option;
-import cc.notabot.noerror4j.option.Some;
+import com.github.domlen2003.noerror4j.option.None;
+import com.github.domlen2003.noerror4j.option.Option;
+import com.github.domlen2003.noerror4j.option.Some;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

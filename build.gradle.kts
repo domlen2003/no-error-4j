@@ -7,8 +7,8 @@ repositories {
     mavenCentral()
 }
 
-version = "0.1.3"
-group = "cc.notabot.noerror4j"
+version = "0.1.4"
+group = "com.github.domlen2003"
 
 dependencies {
     implementation("org.slf4j:slf4j-api:2.0.1")
