@@ -1,12 +1,13 @@
 plugins {
     `java-library`
+    `maven-publish`
 }
 
 repositories {
     mavenCentral()
 }
 
-version = "0.1.2"
+version = "0.1.3"
 group = "cc.notabot.noerror4j"
 
 dependencies {
