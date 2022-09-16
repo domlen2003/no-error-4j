@@ -97,15 +97,15 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @param mapper the function to map the error
      * @return the new Result
      */
-    public <U> @NotNull Result<U> mapError(Function<Throwable, Result<U>> mapper) {
+    public @NotNull Result<T> mapError(Function<Throwable, Result<T>> mapper) {
         return switch (this) {
-            case Ok<U> success -> success;
-            case Err<U> failure -> {
+            case Ok<T> success -> success;
+            case Err<T> failure -> {
                 if (mapper == null) {
                     yield new Err<>(new NullPointerException("Mapper for Result.mapError(mapper) is null"));
                 }
                 try {
-                    Result<U> result = mapper.apply(failure.getError());
+                    Result<T> result = mapper.apply(failure.getError());
                     if (result == null) {
                         yield new Err<>(new NullPointerException("Mapper for Result.mapError(mapper) returned null"));
                     }
