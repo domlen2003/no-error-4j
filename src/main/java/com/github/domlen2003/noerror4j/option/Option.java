@@ -5,10 +5,10 @@ import com.github.domlen2003.noerror4j.result.Ok;
 import com.github.domlen2003.noerror4j.result.Result;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -39,6 +39,7 @@ import java.util.function.Supplier;
  *
  * @param <T> the type of the value
  */
+@SuppressWarnings("unused")
 public sealed abstract class Option<T> permits None, Some {
     private static final Logger LOGGER = LoggerFactory.getLogger(Option.class);
 
@@ -49,7 +50,7 @@ public sealed abstract class Option<T> permits None, Some {
      * @return a {@link Some} if the value is not null, a {@link None} otherwise
      */
     @Contract("_ -> new")
-    public static <T> @NotNull Option<T> of(@Nullable T value) {
+    public static <T> @NotNull Option<T> of(T value) {
         return value == null ? new None<>() : new Some<>(value);
     }
 
@@ -149,6 +150,38 @@ public sealed abstract class Option<T> permits None, Some {
             }
             case Some<T> some -> some;
         };
+    }
+
+    /**
+     * Calls a consumer with a value if the Option is a {@link Some}
+     * @param consumer the consumer to call
+     * @return the current Option
+     */
+    public @NotNull Option<T> doOnSome(Consumer<T> consumer) {
+        if (this instanceof Some<T> some) {
+            try {
+                consumer.accept(some.getValue());
+            } catch (Exception e) {
+                LOGGER.error("Error thrown in consumer of Option.doOnSome(consumer)", e);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Runs a runnable if the Option is a {@link None}
+     * @param runnable the runnable to  call
+     * @return the current Option
+     */
+    public @NotNull Option<T> doOnNone(Runnable runnable) {
+        if (this instanceof None<T> ignored) {
+            try {
+                runnable.run();
+            } catch (Exception e) {
+                LOGGER.error("Error thrown in runnable of Option.doOnNone(runnable)", e);
+            }
+        }
+        return this;
     }
 
     /**

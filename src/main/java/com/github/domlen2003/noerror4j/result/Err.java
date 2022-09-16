@@ -1,5 +1,6 @@
 package com.github.domlen2003.noerror4j.result;
 
+@SuppressWarnings("unused")
 public final class Err<T> extends Result<T> {
     private final Throwable error;
 
@@ -8,7 +9,7 @@ public final class Err<T> extends Result<T> {
     }
 
     public Err(String error) {
-        this.error = new RuntimeException(error);
+        this(new RuntimeException(error));
     }
 
     public Throwable getError() {

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -35,6 +36,7 @@ import java.util.function.Supplier;
  *
  * @param <T> the type of the value
  */
+@SuppressWarnings("unused")
 public sealed abstract class Result<T> permits Err, Ok {
     private static final Logger LOGGER = LoggerFactory.getLogger(Result.class);
 
@@ -189,6 +191,40 @@ public sealed abstract class Result<T> permits Err, Ok {
         } catch (Throwable throwable) {
             return new Err<>(throwable);
         }
+    }
+
+    /**
+     * Sends a throwable to the consumer when the Result is an{@link Err}
+     *
+     * @param consumer the consumer to send the throwable to
+     * @return the current result
+     */
+    public @NotNull Result<T> doOnErr(Consumer<Throwable> consumer) {
+        if (this instanceof Err<T> ex) {
+            try {
+                consumer.accept(ex.getError());
+            } catch (Throwable e) {
+                LOGGER.error("Error thrown in consumer of Result.doOnErr(consumer)", e);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Sends a value to the consumer when the Result is an{@link Ok}
+     *
+     * @param consumer the consumer to send the value to
+     * @return the current result
+     */
+    public @NotNull Result<T> doOnOk(Consumer<T> consumer) {
+        if (this instanceof Ok<T> ex) {
+            try {
+                consumer.accept(ex.getValue());
+            } catch (Throwable e) {
+                LOGGER.error("Error thrown in consumer of Result.doOnOk(consumer)", e);
+            }
+        }
+        return this;
     }
 
     /**
