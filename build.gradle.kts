@@ -6,7 +6,7 @@ repositories {
     mavenCentral()
 }
 
-version = "0.1"
+version = "0.1.2"
 group = "cc.notabot.noerror4j"
 
 dependencies {
