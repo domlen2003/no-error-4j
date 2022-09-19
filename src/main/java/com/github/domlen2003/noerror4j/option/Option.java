@@ -55,6 +55,12 @@ public sealed abstract class Option<T> permits None, Some {
         return value == null ? new None<>() : new Some<>(value);
     }
 
+    /**
+     * Creates a new Option of a nullable {@link Optional}
+     *
+     * @param value the optional to convert
+     * @return a {@link Some} if the optional is present, a {@link None} otherwise
+     */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Contract("_ -> new")
     public static <T> @NotNull Option<T> of(Optional<T> value) {
@@ -116,7 +122,7 @@ public sealed abstract class Option<T> permits None, Some {
     }
 
     /**
-     * Returns the current Option if it is a {@link Some}, otherwise returns the supplied Value as a option.
+     * Returns the current Option if it is a {@link Some}, otherwise returns the supplied Value as an Option.
      *
      * @param supplier the supplier to get the value from
      * @return a {@link Some} if the Option or the supplier has a value, else a {@link None}
