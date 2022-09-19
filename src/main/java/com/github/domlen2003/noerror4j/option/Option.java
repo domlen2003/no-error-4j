@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -52,6 +53,11 @@ public sealed abstract class Option<T> permits None, Some {
     @Contract("_ -> new")
     public static <T> @NotNull Option<T> of(T value) {
         return value == null ? new None<>() : new Some<>(value);
+    }
+
+    @Contract("_ -> new")
+    public static <T> @NotNull Option<T> of(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") @NotNull Optional<T> value) {
+        return of(value.orElse(null));
     }
 
     /**
@@ -154,6 +160,7 @@ public sealed abstract class Option<T> permits None, Some {
 
     /**
      * Calls a consumer with a value if the Option is a {@link Some}
+     *
      * @param consumer the consumer to call
      * @return the current Option
      */
@@ -170,6 +177,7 @@ public sealed abstract class Option<T> permits None, Some {
 
     /**
      * Runs a runnable if the Option is a {@link None}
+     *
      * @param runnable the runnable to  call
      * @return the current Option
      */
