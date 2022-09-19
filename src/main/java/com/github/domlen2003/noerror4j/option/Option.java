@@ -55,9 +55,10 @@ public sealed abstract class Option<T> permits None, Some {
         return value == null ? new None<>() : new Some<>(value);
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Contract("_ -> new")
-    public static <T> @NotNull Option<T> of(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") @NotNull Optional<T> value) {
-        return of(value.orElse(null));
+    public static <T> @NotNull Option<T> of(Optional<T> value) {
+        return value == null || value.isEmpty() ? new None<>() : of(value.get());
     }
 
     /**
