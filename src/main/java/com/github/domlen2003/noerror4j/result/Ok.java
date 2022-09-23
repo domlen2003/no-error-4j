@@ -28,7 +28,8 @@ public final class Ok<T> extends Result<T> {
     }
 
     @Override
-    @NotNull <U> Result<U> mapOk(@Nullable Function<@NotNull T, @Nullable U> mapper) {
+    @NotNull
+    public <U> Result<U> mapOk(@Nullable Function<@NotNull T, @Nullable U> mapper) {
         if (mapper == null) {
             return Err.of(new NullPointerException("Mapper for Result.mapOk(mapper) is null"));
         }
@@ -41,7 +42,8 @@ public final class Ok<T> extends Result<T> {
     }
 
     @Override
-    @NotNull <U> Result<U> flatMapOk(@Nullable Function<@NotNull T, @Nullable Result<U>> mapper) {
+    @NotNull
+    public <U> Result<U> flatMapOk(@Nullable Function<@NotNull T, @Nullable Result<U>> mapper) {
         if (mapper == null) {
             return Err.of(new NullPointerException("Mapper for Result.flatMapOk(mapper) is null"));
         }
@@ -54,22 +56,26 @@ public final class Ok<T> extends Result<T> {
     }
 
     @Override
-    @NotNull Result<T> mapErr(@Nullable Function<@NotNull Throwable, @Nullable T> mapper) {
+    @NotNull
+    public Result<T> mapErr(@Nullable Function<@NotNull Throwable, @Nullable T> mapper) {
         return this;
     }
 
     @Override
-    @NotNull Result<T> flatMapErr(@Nullable Function<@NotNull Throwable, @Nullable Result<T>> mapper) {
+    @NotNull
+    public Result<T> flatMapErr(@Nullable Function<@NotNull Throwable, @Nullable Result<T>> mapper) {
         return this;
     }
 
     @Override
-    @NotNull Result<T> doOnErr(@Nullable Consumer<@NotNull Throwable> consumer) {
+    @NotNull
+    public Result<T> doOnErr(@Nullable Consumer<@NotNull Throwable> consumer) {
         return this;
     }
 
     @Override
-    @NotNull Result<T> doOnOk(@Nullable Consumer<@NotNull T> consumer) {
+    @NotNull
+    public Result<T> doOnOk(@Nullable Consumer<@NotNull T> consumer) {
         if (consumer != null) {
             try {
                 consumer.accept(value);
@@ -82,12 +88,12 @@ public final class Ok<T> extends Result<T> {
 
     @Override
     @NotNull
-    Option<T> asOption() {
+    public Option<T> asOption() {
         return Some.of(value);
     }
 
     @Override
-    boolean isPresent() {
+    public boolean isPresent() {
         return true;
     }
 }

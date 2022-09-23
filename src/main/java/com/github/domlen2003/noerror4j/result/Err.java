@@ -45,17 +45,20 @@ public final class Err<T> extends Result<T> {
     }
 
     @Override
-    @NotNull <U> Result<U> mapOk(@Nullable Function<@NotNull T, @Nullable U> mapper) {
+    @NotNull
+    public <U> Result<U> mapOk(@Nullable Function<@NotNull T, @Nullable U> mapper) {
         return new Err<>(error);
     }
 
     @Override
-    @NotNull <U> Result<U> flatMapOk(@Nullable Function<@NotNull T, @Nullable Result<U>> mapper) {
+    @NotNull
+    public <U> Result<U> flatMapOk(@Nullable Function<@NotNull T, @Nullable Result<U>> mapper) {
         return new Err<>(error);
     }
 
     @Override
-    @NotNull Result<T> mapErr(@Nullable Function<@NotNull Throwable, @Nullable T> mapper) {
+    @NotNull
+    public Result<T> mapErr(@Nullable Function<@NotNull Throwable, @Nullable T> mapper) {
         if (mapper == null) {
             return new Err<>(new NullPointerException("Mapper for Result.mapErr(mapper) is null"));
         }
@@ -68,7 +71,8 @@ public final class Err<T> extends Result<T> {
     }
 
     @Override
-    @NotNull Result<T> flatMapErr(@Nullable Function<@NotNull Throwable, @Nullable Result<T>> mapper) {
+    @NotNull
+    public Result<T> flatMapErr(@Nullable Function<@NotNull Throwable, @Nullable Result<T>> mapper) {
         if (mapper == null) {
             return new Err<>(new NullPointerException("Mapper for Result.flatMapErr(mapper) is null"));
         }
@@ -81,7 +85,8 @@ public final class Err<T> extends Result<T> {
     }
 
     @Override
-    @NotNull Result<T> doOnErr(@Nullable Consumer<@NotNull Throwable> consumer) {
+    @NotNull
+    public Result<T> doOnErr(@Nullable Consumer<@NotNull Throwable> consumer) {
         if (consumer != null) {
             try {
                 consumer.accept(error);
@@ -93,19 +98,20 @@ public final class Err<T> extends Result<T> {
     }
 
     @Override
-    @NotNull Result<T> doOnOk(@Nullable Consumer<@NotNull T> consumer) {
+    @NotNull
+    public Result<T> doOnOk(@Nullable Consumer<@NotNull T> consumer) {
         return this;
     }
 
     @Override
     @NotNull @Unmodifiable
-    Option<T> asOption() {
+    public Option<T> asOption() {
         LOGGER.error("Error dropped when converting Result.asOption()", error);
         return None.create();
     }
 
     @Override
-    boolean isPresent() {
+    public boolean isPresent() {
         return false;
     }
 }

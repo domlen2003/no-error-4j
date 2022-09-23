@@ -22,18 +22,20 @@ public final class None<T> extends Option<T> {
     }
 
     @Override
-    @NotNull <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper) {
-        return None.create();
-    }
-
-    @Override
-    @NotNull <U> Option<U> flatMapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable Option<U>> mapper) {
+    @NotNull
+    public <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper) {
         return None.create();
     }
 
     @Override
     @NotNull
-    Option<T> mapNone(@Nullable Supplier<@Nullable T> supplier) {
+    public <U> Option<U> flatMapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable Option<U>> mapper) {
+        return None.create();
+    }
+
+    @Override
+    @NotNull
+    public Option<T> mapNone(@Nullable Supplier<@Nullable T> supplier) {
         if (supplier == null) {
             return None.create();
         }
@@ -43,7 +45,7 @@ public final class None<T> extends Option<T> {
 
     @Override
     @NotNull
-    Option<T> flatMapNone(@Nullable Supplier<? extends @Nullable Option<T>> supplier) {
+    public Option<T> flatMapNone(@Nullable Supplier<? extends @Nullable Option<T>> supplier) {
         if (supplier == null) {
             return None.create();
         }
@@ -53,14 +55,14 @@ public final class None<T> extends Option<T> {
 
     @Override
     @NotNull
-    Option<T> doOnSome(@Nullable Consumer<@NotNull T> consumer) {
+    public Option<T> doOnSome(@Nullable Consumer<@NotNull T> consumer) {
         return this;
     }
 
 
     @Override
     @NotNull
-    Option<T> doOnNone(@Nullable Runnable runnable) {
+    public Option<T> doOnNone(@Nullable Runnable runnable) {
         if (runnable != null) {
             try {
                 runnable.run();
@@ -73,12 +75,12 @@ public final class None<T> extends Option<T> {
 
     @Override
     @NotNull
-    Result<T> asResult() {
+    public Result<T> asResult() {
         return Err.of(new NullPointerException("Option is empty"));
     }
 
     @Override
-    boolean isPresent() {
+    public boolean isPresent() {
         return false;
     }
 }

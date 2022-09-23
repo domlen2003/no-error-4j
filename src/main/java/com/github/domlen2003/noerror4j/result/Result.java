@@ -97,7 +97,7 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @return the new Result
      */
     @NotNull
-    abstract <U> Result<U> mapOk(@Nullable Function<@NotNull T, @Nullable U> mapper);
+    public abstract <U> Result<U> mapOk(@Nullable Function<@NotNull T, @Nullable U> mapper);
 
     /**
      * If the result is {@link Ok} maps the value of Ok to a new Result or returns the {@link Err}
@@ -106,7 +106,7 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @return the new Result
      */
     @NotNull
-    abstract <U> Result<U> flatMapOk(@Nullable Function<@NotNull T, @Nullable Result<U>> mapper);
+    public abstract <U> Result<U> flatMapOk(@Nullable Function<@NotNull T, @Nullable Result<U>> mapper);
 
     /**
      * If the result is {@link Err} maps the error of Err to a new Value or returns the {@link Ok}
@@ -117,7 +117,7 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @return the new Result
      */
     @NotNull
-    abstract Result<T> mapErr(@Nullable Function<@NotNull Throwable, @Nullable T> mapper);
+    public abstract Result<T> mapErr(@Nullable Function<@NotNull Throwable, @Nullable T> mapper);
 
     /**
      * If the result is {@link Err} maps the error of Err to a new Result or returns the {@link Ok}
@@ -128,7 +128,7 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @return the new Result
      */
     @NotNull
-    abstract Result<T> flatMapErr(@Nullable Function<@NotNull Throwable, @Nullable Result<T>> mapper);
+    public abstract Result<T> flatMapErr(@Nullable Function<@NotNull Throwable, @Nullable Result<T>> mapper);
 
     /**
      * Sends a throwable to the consumer when the Result is an{@link Err}
@@ -137,7 +137,7 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @return the current result
      */
     @NotNull
-    abstract Result<T> doOnErr(@Nullable Consumer<@NotNull Throwable> consumer);
+    public abstract Result<T> doOnErr(@Nullable Consumer<@NotNull Throwable> consumer);
 
     /**
      * Sends a value to the consumer when the Result is an{@link Ok}
@@ -146,7 +146,7 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @return the current result
      */
     @NotNull
-    abstract Result<T> doOnOk(@Nullable Consumer<@NotNull T> consumer);
+    public abstract Result<T> doOnOk(@Nullable Consumer<@NotNull T> consumer);
 
     /**
      * If the result is {@link Ok} maps the value of Ok to a new {@link Some} or logs the error and returns {@link None}
@@ -154,8 +154,8 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @return the new Option
      */
     @NotNull
-    abstract Option<T> asOption();
+    public abstract Option<T> asOption();
 
-    abstract boolean isPresent();
+    public abstract boolean isPresent();
 }
 

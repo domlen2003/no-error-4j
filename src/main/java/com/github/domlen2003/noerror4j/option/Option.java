@@ -94,7 +94,7 @@ public sealed abstract class Option<T> permits None, Some {
      * @return a new {@link Some} if the mapper, mapped-value and previous value are not null, a {@link None} otherwise
      */
     @NotNull
-    abstract <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper);
+    public abstract <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper);
 
     /**
      * Flat-maps the Value of the current Option if Present
@@ -103,7 +103,7 @@ public sealed abstract class Option<T> permits None, Some {
      * @return a new {@link Some} if the mapper, new-option and previous-value are not null, a {@link None} otherwise
      */
     @NotNull
-    abstract <U> Option<U> flatMapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable Option<U>> mapper);
+    public abstract <U> Option<U> flatMapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable Option<U>> mapper);
 
     /**
      * Returns the current Option if it is a {@link Some}, otherwise returns the supplied Value as an Option.
@@ -112,7 +112,7 @@ public sealed abstract class Option<T> permits None, Some {
      * @return a {@link Some} if the Option or the supplier has a value, else a {@link None}
      */
     @NotNull
-    abstract Option<T> mapNone(@Nullable Supplier<@Nullable T> supplier);
+    public abstract Option<T> mapNone(@Nullable Supplier<@Nullable T> supplier);
 
     /**
      * Returns the current Option if it is a {@link Some}, otherwise returns the supplied Option.
@@ -121,7 +121,7 @@ public sealed abstract class Option<T> permits None, Some {
      * @return a {@link Some} if any of the two Options has a value, else a {@link None}
      */
     @NotNull
-    abstract Option<T> flatMapNone(@Nullable Supplier<? extends @Nullable Option<T>> supplier);
+    public abstract Option<T> flatMapNone(@Nullable Supplier<? extends @Nullable Option<T>> supplier);
 
     /**
      * Calls a consumer with a value if the Option is a {@link Some}
@@ -130,7 +130,7 @@ public sealed abstract class Option<T> permits None, Some {
      * @return the current Option
      */
     @NotNull
-    abstract Option<T> doOnSome(@Nullable Consumer<T> consumer);
+    public abstract Option<T> doOnSome(@Nullable Consumer<T> consumer);
 
     /**
      * Runs a runnable if the Option is a {@link None}
@@ -139,7 +139,7 @@ public sealed abstract class Option<T> permits None, Some {
      * @return the current Option
      */
     @NotNull
-    abstract Option<T> doOnNone(@Nullable Runnable runnable);
+    public abstract Option<T> doOnNone(@Nullable Runnable runnable);
 
     /**
      * If the option is {@link Some} maps the value of Some to a new {@link Ok} returns s new  {@link Err} of a NullPointerException
@@ -147,12 +147,12 @@ public sealed abstract class Option<T> permits None, Some {
      * @return the new Result
      */
     @NotNull
-    abstract Result<T> asResult();
+    public abstract Result<T> asResult();
 
     /**
      * Whether the Option has a value
      *
      * @return true if the Option is a {@link Some}, false otherwise
      */
-    abstract boolean isPresent();
+    public abstract boolean isPresent();
 }
