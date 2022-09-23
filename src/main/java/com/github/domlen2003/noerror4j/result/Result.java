@@ -3,6 +3,7 @@ package com.github.domlen2003.noerror4j.result;
 import com.github.domlen2003.noerror4j.option.None;
 import com.github.domlen2003.noerror4j.option.Option;
 import com.github.domlen2003.noerror4j.option.Some;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -49,18 +50,19 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @return the result
      */
     @NotNull
+    @Contract("_ -> new")
     public static <T> Result<T> of(@Nullable Supplier<@Nullable T> supplier) {
         try {
             if (supplier == null) {
-                return new Err<>(new NullPointerException("Supplier for Result.of(supplier) is null"));
+                return Err.of(new NullPointerException("Supplier for Result.of(supplier) is null"));
             }
             T value = supplier.get();
             if (value == null) {
-                return new Err<>(new NullPointerException("Getting Supplier for Result.of(supplier) returned null"));
+                return Err.of(new NullPointerException("Getting Supplier for Result.of(supplier) returned null"));
             }
-            return new Ok<>(value);
+            return Ok.of(value);
         } catch (Throwable error) {
-            return new Err<>(error);
+            return Err.of(error);
         }
     }
 
@@ -73,16 +75,16 @@ public sealed abstract class Result<T> permits Err, Ok {
     @NotNull
     public <U> Result<U> map(@Nullable Function<@NotNull Result<T>, @Nullable Result<U>> mapper) {
         if (mapper == null) {
-            return new Err<>(new NullPointerException("Mapper for Result.map(mapper) is null"));
+            return Err.of(new NullPointerException("Mapper for Result.map(mapper) is null"));
         }
         try {
             Result<U> result = mapper.apply(this);
             if (result == null) {
-                return new Err<>(new NullPointerException("Mapper for Result.map(mapper) returned null"));
+                return Err.of(new NullPointerException("Mapper for Result.map(mapper) returned null"));
             }
             return result;
         } catch (Throwable throwable) {
-            return new Err<>(throwable);
+            return Err.of(throwable);
         }
     }
 

@@ -2,8 +2,10 @@ package com.github.domlen2003.noerror4j.result;
 
 import com.github.domlen2003.noerror4j.option.None;
 import com.github.domlen2003.noerror4j.option.Option;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -12,40 +14,30 @@ import java.util.function.Function;
 public final class Err<T> extends Result<T> {
     private final Throwable error;
 
-    /**
-     * Creates a new Err instance.
-     * <p><font color="red">
-     *     WARNING!!! despite the intention of this library, this constructor is not safe and will throw an error if the error is null.
-     * </font></p>
-     * @throws NullPointerException if error is null
-     * @param error the error of the Result.
-     */
-    @SuppressWarnings("ConstantConditions")
-    public Err(@NotNull Throwable error) {
-        if (error == null) {
-            throw new NullPointerException("new Err(error) error is null");
-        }
-        this.error =  error;
+    private Err(@NotNull Throwable error) {
+        this.error = error;
     }
 
-    /**
-     * Creates a new Err instance.
-     * <p><font color="red">
-     *     WARNING!!! despite the intention of this library, this constructor is not safe and will throw an error if the message is null.
-     * </font></p>
-     * @throws NullPointerException if error is null
-     * @param message the message of the error.
-     */
-    @SuppressWarnings("ConstantConditions")
-    public Err(@NotNull String message) {
-        if (message == null) {
-            throw new NullPointerException("new Err(message) message is null");
-        }
-        this.error = new Exception(message);
+    @Contract("_ -> new")
+    @NotNull
+    public static <T> Err<T> of(@Nullable Throwable value) {
+        return value != null ?
+                new Err<>(value) :
+                new Err<>(new NullPointerException("Err.of() error is null"));
+
+    }
+
+    @Contract("_ -> new")
+    @NotNull
+    public static <T> Err<T> of(@Nullable String message) {
+        return message != null ?
+                new Err<>(new RuntimeException(message)) :
+                new Err<>(new NullPointerException("Err.of() message is null"));
     }
 
     /**
      * Gets the wrapped error.
+     *
      * @return the result error
      */
     public Throwable getError() {
@@ -69,7 +61,7 @@ public final class Err<T> extends Result<T> {
         }
         try {
             T result = mapper.apply(error);
-            return result == null ? new Err<>(new NullPointerException("Mapper for Result.mapErr(mapper) returned null")) : new Ok<>(result);
+            return result == null ? new Err<>(new NullPointerException("Mapper for Result.mapErr(mapper) returned null")) : Ok.of(result);
         } catch (Throwable throwable) {
             return new Err<>(throwable);
         }
@@ -106,10 +98,10 @@ public final class Err<T> extends Result<T> {
     }
 
     @Override
-    @NotNull
+    @NotNull @Unmodifiable
     Option<T> asOption() {
         LOGGER.error("Error dropped when converting Result.asOption()", error);
-        return new None<>();
+        return None.create();
     }
 
     @Override

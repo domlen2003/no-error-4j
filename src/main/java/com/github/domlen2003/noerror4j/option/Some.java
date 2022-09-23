@@ -2,6 +2,7 @@ package com.github.domlen2003.noerror4j.option;
 
 import com.github.domlen2003.noerror4j.result.Ok;
 import com.github.domlen2003.noerror4j.result.Result;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,24 +14,19 @@ import java.util.function.Supplier;
 public final class Some<T> extends Option<T> {
     private final T value;
 
-    /**
-     * Creates a new Some instance.
-     * <p><font color="red">
-     *     WARNING!!! despite the intention of this library, this constructor is not safe and will throw an error if the value is null.
-     * </font></p>
-     * @throws NullPointerException if value is null
-     * @param value the value of the Option.
-     */
-    @SuppressWarnings("ConstantConditions")
-    public Some(@NotNull T value) {
-        if (value == null) {
-            throw new NullPointerException("new Some(value) value is null");
-        }
+    private Some(@NotNull T value) {
         this.value = value;
+    }
+
+    @Contract("_ -> new")
+    @NotNull
+    public static <T> Option<T> of(@Nullable T value) {
+        return value != null ? new Some<>(value) : None.create();
     }
 
     /**
      * Gets the wrapped value.
+     *
      * @return the Options value.
      */
     @NotNull
@@ -39,32 +35,30 @@ public final class Some<T> extends Option<T> {
     }
 
     @Override
-    @NotNull
-    <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper) {
+    @NotNull <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper) {
         if (mapper == null) {
-            return new None<>();
+            return None.create();
         }
         try {
             U result = mapper.apply(value);
-            return result == null ? new None<>() : new Some<>(result);
+            return result == null ? None.create() : new Some<>(result);
         } catch (Exception e) {
             LOGGER.error("Error thrown in mapper of Option.map(mapper)", e);
-            return new None<>();
+            return None.create();
         }
     }
 
     @Override
-    @NotNull
-    <U> Option<U> flatMapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable Option<U>> mapper) {
+    @NotNull <U> Option<U> flatMapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable Option<U>> mapper) {
         if (mapper == null) {
-            return new None<>();
+            return None.create();
         }
         try {
             Option<U> option = mapper.apply(value);
-            return option == null ? new None<>() : option;
+            return option == null ? None.create() : option;
         } catch (Exception e) {
             LOGGER.error("Error thrown in mapper of Option.flatMap(mapper)", e);
-            return new None<>();
+            return None.create();
         }
     }
 
@@ -102,7 +96,7 @@ public final class Some<T> extends Option<T> {
     @Override
     @NotNull
     Result<T> asResult() {
-        return new Ok<>(value);
+        return Ok.of(value);
     }
 
     @Override

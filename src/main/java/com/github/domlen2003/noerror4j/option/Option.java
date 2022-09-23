@@ -52,7 +52,7 @@ public sealed abstract class Option<T> permits None, Some {
     @Contract("_ -> new")
     @NotNull
     public static <T> Option<T> of(@Nullable T value) {
-        return value == null ? new None<>() : new Some<>(value);
+        return Some.of(value);
     }
 
     /**
@@ -65,7 +65,7 @@ public sealed abstract class Option<T> permits None, Some {
     @Contract("_ -> new")
     @NotNull
     public static <T> Option<T> of(@Nullable Optional<T> value) {
-        return value == null || value.isEmpty() ? new None<>() : of(value.get());
+        return value == null || value.isEmpty() ? None.create() : of(value.get());
     }
 
     /**
@@ -77,13 +77,13 @@ public sealed abstract class Option<T> permits None, Some {
     @NotNull
     public <U> Option<U> map(@Nullable Function<@NotNull Option<T>, @Nullable Option<U>> mapper) {
         if (mapper == null) {
-            return new None<>();
+            return None.create();
         }
         try {
             Option<U> result = mapper.apply(this);
-            return result == null ? new None<>() : result;
+            return result == null ? None.create() : result;
         } catch (Throwable throwable) {
-            return new None<>();
+            return None.create();
         }
     }
 

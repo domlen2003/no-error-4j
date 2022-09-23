@@ -2,6 +2,7 @@ package com.github.domlen2003.noerror4j.option;
 
 import com.github.domlen2003.noerror4j.result.Err;
 import com.github.domlen2003.noerror4j.result.Result;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,34 +12,43 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public final class None<T> extends Option<T> {
-    @Override
-    @NotNull <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper) {
+
+    private None() {
+    }
+
+    @Contract(" -> new")
+    public static <T> @NotNull None<T> create() {
         return new None<>();
     }
 
     @Override
+    @NotNull <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper) {
+        return None.create();
+    }
+
+    @Override
     @NotNull <U> Option<U> flatMapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable Option<U>> mapper) {
-        return new None<>();
+        return None.create();
     }
 
     @Override
     @NotNull
     Option<T> mapNone(@Nullable Supplier<@Nullable T> supplier) {
         if (supplier == null) {
-            return new None<>();
+            return None.create();
         }
         T result = supplier.get();
-        return result == null ? new None<>() : new Some<>(result);
+        return result == null ? None.create() : Some.of(result);
     }
 
     @Override
     @NotNull
     Option<T> flatMapNone(@Nullable Supplier<? extends @Nullable Option<T>> supplier) {
         if (supplier == null) {
-            return new None<>();
+            return None.create();
         }
         Option<T> option = supplier.get();
-        return option == null ? new None<>() : option;
+        return option == null ? None.create() : option;
     }
 
     @Override
@@ -46,6 +56,7 @@ public final class None<T> extends Option<T> {
     Option<T> doOnSome(@Nullable Consumer<@NotNull T> consumer) {
         return this;
     }
+
 
     @Override
     @NotNull
@@ -63,7 +74,7 @@ public final class None<T> extends Option<T> {
     @Override
     @NotNull
     Result<T> asResult() {
-        return new Err<>(new NullPointerException("Option is empty"));
+        return Err.of(new NullPointerException("Option is empty"));
     }
 
     @Override
