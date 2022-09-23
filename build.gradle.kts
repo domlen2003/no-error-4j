@@ -7,24 +7,18 @@ repositories {
     mavenCentral()
 }
 
-version = "0.2.5"
+version = "1.0.0-RC1"
 group = "com.github.domlen2003"
 
 dependencies {
-    implementation("org.slf4j:slf4j-api:2.0.1")
+    implementation("org.slf4j:slf4j-api:2.0.2")
     api("org.jetbrains:annotations:23.0.0")
 }
 
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
-java {
-    sourceCompatibility = JavaVersion.toVersion("18")
-    targetCompatibility = JavaVersion.toVersion("18")
-}
-
-
-tasks.compileJava {
+tasks.withType(JavaCompile::class) {
     options.javaModuleVersion.set(provider { version as String })
-    options.compilerArgs.add("--enable-preview")
 }
 
 publishing {
