@@ -17,7 +17,7 @@ dependencies {
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
-tasks.withType(JavaCompile::class) {
+tasks.withType<JavaCompile> {
     options.javaModuleVersion.set(provider { version as String })
 }
 
