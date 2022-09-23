@@ -7,7 +7,7 @@ repositories {
     mavenCentral()
 }
 
-version = "1.0.0-RC1"
+version = "1.0.0-RC2"
 group = "com.github.domlen2003"
 
 dependencies {
