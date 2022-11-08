@@ -49,8 +49,8 @@ public sealed abstract class Option<T> permits None, Some {
      * @param value the value to wrap
      * @return a {@link Some} if the value is not null, a {@link None} otherwise
      */
-    @Contract("_ -> new")
     @NotNull
+    @Contract("_ -> new")
     public static <T> Option<T> of(@Nullable T value) {
         return Some.of(value);
     }
@@ -62,8 +62,8 @@ public sealed abstract class Option<T> permits None, Some {
      * @return a {@link Some} if the optional is present, a {@link None} otherwise
      */
     @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalAssignedToNull"})
-    @Contract("_ -> new")
     @NotNull
+    @Contract("_ -> new")
     public static <T> Option<T> of(@Nullable Optional<T> value) {
         return value == null || value.isEmpty() ? None.create() : of(value.get());
     }
@@ -75,6 +75,7 @@ public sealed abstract class Option<T> permits None, Some {
      * @return the mapped result
      */
     @NotNull
+    @Contract("_ -> new")
     public <U> Option<U> map(@Nullable Function<@NotNull Option<T>, @Nullable Option<U>> mapper) {
         if (mapper == null) {
             return None.create();
@@ -154,5 +155,6 @@ public sealed abstract class Option<T> permits None, Some {
      *
      * @return true if the Option is a {@link Some}, false otherwise
      */
+    @Contract("-> _")
     public abstract boolean isPresent();
 }

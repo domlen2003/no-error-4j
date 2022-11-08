@@ -18,20 +18,27 @@ public final class Err<T> extends Result<T> {
         this.error = error;
     }
 
-    @Contract("_ -> new")
     @NotNull
+    @Contract("_ -> new")
     public static <T> Err<T> of(@Nullable Throwable value) {
         return value != null ?
                 new Err<>(value) :
                 new Err<>(new NullPointerException("Err.of() error is null"));
-
     }
 
-    @Contract("_ -> new")
     @NotNull
+    @Contract("_ -> new")
     public static <T> Err<T> of(@Nullable String message) {
         return message != null ?
                 new Err<>(new RuntimeException(message)) :
+                new Err<>(new NullPointerException("Err.of() message is null"));
+    }
+
+    @NotNull
+    @Contract("_, _-> new")
+    public static <T> Err<T> of(@Nullable String message, Throwable cause) {
+        return message != null ?
+                new Err<>(new RuntimeException(message, cause)) :
                 new Err<>(new NullPointerException("Err.of() message is null"));
     }
 
@@ -40,24 +47,28 @@ public final class Err<T> extends Result<T> {
      *
      * @return the result error
      */
+    @NotNull
     public Throwable getError() {
         return error;
     }
 
     @Override
     @NotNull
+    @Contract("_ -> new")
     public <U> Result<U> mapOk(@Nullable Function<@NotNull T, @Nullable U> mapper) {
         return new Err<>(error);
     }
 
     @Override
     @NotNull
+    @Contract("_ -> new")
     public <U> Result<U> flatMapOk(@Nullable Function<@NotNull T, @Nullable Result<U>> mapper) {
         return new Err<>(error);
     }
 
     @Override
     @NotNull
+    @Contract("_ -> new")
     public Result<T> mapErr(@Nullable Function<@NotNull Throwable, @Nullable T> mapper) {
         if (mapper == null) {
             return new Err<>(new NullPointerException("Mapper for Result.mapErr(mapper) is null"));
@@ -72,6 +83,7 @@ public final class Err<T> extends Result<T> {
 
     @Override
     @NotNull
+    @Contract("_ -> new")
     public Result<T> flatMapErr(@Nullable Function<@NotNull Throwable, @Nullable Result<T>> mapper) {
         if (mapper == null) {
             return new Err<>(new NullPointerException("Mapper for Result.flatMapErr(mapper) is null"));
@@ -86,6 +98,7 @@ public final class Err<T> extends Result<T> {
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Result<T> doOnErr(@Nullable Consumer<@NotNull Throwable> consumer) {
         if (consumer != null) {
             try {
@@ -99,18 +112,22 @@ public final class Err<T> extends Result<T> {
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Result<T> doOnOk(@Nullable Consumer<@NotNull T> consumer) {
         return this;
     }
 
     @Override
-    @NotNull @Unmodifiable
+    @NotNull
+    @Unmodifiable
+    @Contract("-> new")
     public Option<T> asOption() {
         LOGGER.error("Error dropped when converting Result.asOption()", error);
         return None.create();
     }
 
     @Override
+    @Contract("-> false")
     public boolean isPresent() {
         return false;
     }

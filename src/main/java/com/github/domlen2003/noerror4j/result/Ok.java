@@ -17,18 +17,20 @@ public final class Ok<T> extends Result<T> {
         this.value = value;
     }
 
-    @Contract("_ -> new")
     @NotNull
+    @Contract("_ -> new")
     public static <T> Result<T> of(@Nullable T value) {
         return value != null ? new Ok<>(value) : Err.of(new NullPointerException("Ok.of() value is null"));
     }
 
+    @NotNull
     public T getValue() {
         return value;
     }
 
     @Override
     @NotNull
+    @Contract("_ -> new")
     public <U> Result<U> mapOk(@Nullable Function<@NotNull T, @Nullable U> mapper) {
         if (mapper == null) {
             return Err.of(new NullPointerException("Mapper for Result.mapOk(mapper) is null"));
@@ -43,6 +45,7 @@ public final class Ok<T> extends Result<T> {
 
     @Override
     @NotNull
+    @Contract("_ -> new")
     public <U> Result<U> flatMapOk(@Nullable Function<@NotNull T, @Nullable Result<U>> mapper) {
         if (mapper == null) {
             return Err.of(new NullPointerException("Mapper for Result.flatMapOk(mapper) is null"));
@@ -57,24 +60,28 @@ public final class Ok<T> extends Result<T> {
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Result<T> mapErr(@Nullable Function<@NotNull Throwable, @Nullable T> mapper) {
         return this;
     }
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Result<T> flatMapErr(@Nullable Function<@NotNull Throwable, @Nullable Result<T>> mapper) {
         return this;
     }
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Result<T> doOnErr(@Nullable Consumer<@NotNull Throwable> consumer) {
         return this;
     }
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Result<T> doOnOk(@Nullable Consumer<@NotNull T> consumer) {
         if (consumer != null) {
             try {
@@ -88,11 +95,13 @@ public final class Ok<T> extends Result<T> {
 
     @Override
     @NotNull
+    @Contract("-> new")
     public Option<T> asOption() {
         return Some.of(value);
     }
 
     @Override
+    @Contract("-> true")
     public boolean isPresent() {
         return true;
     }

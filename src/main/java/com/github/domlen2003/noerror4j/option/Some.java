@@ -36,6 +36,7 @@ public final class Some<T> extends Option<T> {
 
     @Override
     @NotNull
+    @Contract("_ -> new")
     public <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper) {
         if (mapper == null) {
             return None.create();
@@ -51,6 +52,7 @@ public final class Some<T> extends Option<T> {
 
     @Override
     @NotNull
+    @Contract("_ -> new")
     public <U> Option<U> flatMapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable Option<U>> mapper) {
         if (mapper == null) {
             return None.create();
@@ -66,18 +68,21 @@ public final class Some<T> extends Option<T> {
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Option<T> mapNone(@Nullable Supplier<@Nullable T> supplier) {
         return this;
     }
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Option<T> flatMapNone(@Nullable Supplier<? extends @Nullable Option<T>> supplier) {
         return this;
     }
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Option<T> doOnSome(@Nullable Consumer<@NotNull T> consumer) {
         if (consumer != null) {
             try {
@@ -91,17 +96,20 @@ public final class Some<T> extends Option<T> {
 
     @Override
     @NotNull
+    @Contract("_ -> this")
     public Option<T> doOnNone(@Nullable Runnable runnable) {
         return this;
     }
 
     @Override
     @NotNull
+    @Contract("-> new")
     public Result<T> asResult() {
         return Ok.of(value);
     }
 
     @Override
+    @Contract("-> true")
     public boolean isPresent() {
         return true;
     }

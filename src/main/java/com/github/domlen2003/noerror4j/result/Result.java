@@ -52,10 +52,10 @@ public sealed abstract class Result<T> permits Err, Ok {
     @NotNull
     @Contract("_ -> new")
     public static <T> Result<T> of(@Nullable Supplier<@Nullable T> supplier) {
+        if (supplier == null) {
+            return Err.of(new NullPointerException("Supplier for Result.of(supplier) is null"));
+        }
         try {
-            if (supplier == null) {
-                return Err.of(new NullPointerException("Supplier for Result.of(supplier) is null"));
-            }
             T value = supplier.get();
             if (value == null) {
                 return Err.of(new NullPointerException("Getting Supplier for Result.of(supplier) returned null"));
@@ -73,6 +73,7 @@ public sealed abstract class Result<T> permits Err, Ok {
      * @return the mapped result
      */
     @NotNull
+    @Contract("_ -> new")
     public <U> Result<U> map(@Nullable Function<@NotNull Result<T>, @Nullable Result<U>> mapper) {
         if (mapper == null) {
             return Err.of(new NullPointerException("Mapper for Result.map(mapper) is null"));
@@ -156,6 +157,7 @@ public sealed abstract class Result<T> permits Err, Ok {
     @NotNull
     public abstract Option<T> asOption();
 
+    @Contract("-> _")
     public abstract boolean isPresent();
 }
 
