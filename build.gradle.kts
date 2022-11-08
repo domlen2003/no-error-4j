@@ -11,14 +11,21 @@ version = "1.0.0-RC2"
 group = "com.github.domlen2003"
 
 dependencies {
-    implementation("org.slf4j:slf4j-api:2.0.2")
+    implementation("org.slf4j:slf4j-api:2.0.3")
     api("org.jetbrains:annotations:23.0.0")
+    testImplementation("junit:junit:4.13.2")
 }
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
 tasks.withType<JavaCompile> {
     options.javaModuleVersion.set(provider { version as String })
+}
+
+tasks.withType<Test> {
+    useJUnit()
+
+    maxHeapSize = "1G"
 }
 
 publishing {
