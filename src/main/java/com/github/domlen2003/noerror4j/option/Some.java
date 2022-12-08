@@ -21,7 +21,7 @@ public final class Some<T> extends Option<T> {
     @Contract("_ -> new")
     @NotNull
     public static <T> Option<T> of(@Nullable T value) {
-        return value != null ? new Some<>(value) : None.create();
+        return value != null ? new Some<>(value) : None.instance();
     }
 
     /**
@@ -39,14 +39,14 @@ public final class Some<T> extends Option<T> {
     @Contract("_ -> new")
     public <U> Option<U> mapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable U> mapper) {
         if (mapper == null) {
-            return None.create();
+            return None.instance();
         }
         try {
             U result = mapper.apply(value);
-            return result == null ? None.create() : new Some<>(result);
+            return result == null ? None.instance() : new Some<>(result);
         } catch (Exception e) {
-            LOGGER.error("Error thrown in mapper of Option.map(mapper)", e);
-            return None.create();
+            sinkError("Error thrown in mapper of Option.map(mapper)", e);
+            return None.instance();
         }
     }
 
@@ -55,14 +55,14 @@ public final class Some<T> extends Option<T> {
     @Contract("_ -> new")
     public <U> Option<U> flatMapSome(@Nullable Function<? super @NotNull T, ? extends @Nullable Option<U>> mapper) {
         if (mapper == null) {
-            return None.create();
+            return None.instance();
         }
         try {
             Option<U> option = mapper.apply(value);
-            return option == null ? None.create() : option;
+            return option == null ? None.instance() : option;
         } catch (Exception e) {
-            LOGGER.error("Error thrown in mapper of Option.flatMap(mapper)", e);
-            return None.create();
+            sinkError("Error thrown in mapper of Option.flatMap(mapper)", e);
+            return None.instance();
         }
     }
 
@@ -88,7 +88,7 @@ public final class Some<T> extends Option<T> {
             try {
                 consumer.accept(value);
             } catch (Exception e) {
-                LOGGER.error("Error thrown in consumer of Option.doOnSome(consumer)", e);
+               sinkError("Error thrown in consumer of Option.doOnSome(consumer)", e);
             }
         }
         return this;

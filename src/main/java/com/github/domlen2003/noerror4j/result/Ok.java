@@ -87,7 +87,7 @@ public final class Ok<T> extends Result<T> {
             try {
                 consumer.accept(value);
             } catch (Throwable e) {
-                LOGGER.error("Error thrown in consumer of Result.doOnOk(consumer)", e);
+              sinkError("Error thrown in consumer of Result.doOnOk(consumer)", e);
             }
         }
         return this;

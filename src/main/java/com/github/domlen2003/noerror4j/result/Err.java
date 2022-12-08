@@ -104,7 +104,7 @@ public final class Err<T> extends Result<T> {
             try {
                 consumer.accept(error);
             } catch (Throwable e) {
-                LOGGER.error("Error thrown in consumer of Result.doOnErr(consumer)", e);
+                sinkError("Error thrown in consumer of Result.doOnErr(consumer)", e);
             }
         }
         return this;
@@ -122,8 +122,8 @@ public final class Err<T> extends Result<T> {
     @Unmodifiable
     @Contract("-> new")
     public Option<T> asOption() {
-        LOGGER.error("Error dropped when converting Result.asOption()", error);
-        return None.create();
+        sinkError("Error dropped when converting Result.asOption()", error);
+        return None.instance();
     }
 
     @Override

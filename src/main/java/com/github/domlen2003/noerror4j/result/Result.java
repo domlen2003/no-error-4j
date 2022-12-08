@@ -6,9 +6,8 @@ import com.github.domlen2003.noerror4j.option.Some;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -40,7 +39,17 @@ import java.util.function.Supplier;
  */
 @SuppressWarnings("unused")
 public sealed abstract class Result<T> permits Err, Ok {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Result.class);
+    protected static Option<BiConsumer<String, Throwable>> errorSink = None.instance();
+
+    public static void setErrorSink(BiConsumer<String, Throwable> errorSink) {
+        if (errorSink != null) {
+            Result.errorSink = Some.of(errorSink);
+        }
+    }
+
+    protected static void sinkError(String message, Throwable error) {
+        errorSink.doOnSome(sink -> sink.accept(message, error));
+    }
 
     /**
      * If getting the supplier didn't throw an exception creates an {@link Ok}, creates an {@link Err} otherwise

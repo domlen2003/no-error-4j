@@ -6,10 +6,9 @@ import com.github.domlen2003.noerror4j.result.Result;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -41,18 +40,18 @@ import java.util.function.Supplier;
  */
 @SuppressWarnings("unused")
 public sealed abstract class Option<T> permits None, Some {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Option.class);
+    private static BiConsumer<String, Throwable> errorSink;
 
-    /**
-     * Creates a new Option of a nullable value
-     *
-     * @param value the value to wrap
-     * @return a {@link Some} if the value is not null, a {@link None} otherwise
-     */
-    @NotNull
-    @Contract("_ -> new")
-    public static <T> Option<T> of(@Nullable T value) {
-        return Some.of(value);
+    public static void setErrorSink(BiConsumer<String, Throwable> errorSink) {
+        if (errorSink != null) {
+            Option.errorSink = errorSink;
+        }
+    }
+
+    protected static void sinkError(String message, Throwable error) {
+        if (errorSink != null) {
+            errorSink.accept(message, error);
+        }
     }
 
     /**
@@ -65,7 +64,7 @@ public sealed abstract class Option<T> permits None, Some {
     @NotNull
     @Contract("_ -> new")
     public static <T> Option<T> of(@Nullable Optional<T> value) {
-        return value == null || value.isEmpty() ? None.create() : of(value.get());
+        return value == null || value.isEmpty() ? None.instance() : Some.of(value.get());
     }
 
     /**
@@ -78,13 +77,13 @@ public sealed abstract class Option<T> permits None, Some {
     @Contract("_ -> new")
     public <U> Option<U> map(@Nullable Function<@NotNull Option<T>, @Nullable Option<U>> mapper) {
         if (mapper == null) {
-            return None.create();
+            return None.instance();
         }
         try {
             Option<U> result = mapper.apply(this);
-            return result == null ? None.create() : result;
+            return result == null ? None.instance() : result;
         } catch (Throwable throwable) {
-            return None.create();
+            return None.instance();
         }
     }
 
