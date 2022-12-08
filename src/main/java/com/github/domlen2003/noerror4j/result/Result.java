@@ -39,16 +39,18 @@ import java.util.function.Supplier;
  */
 @SuppressWarnings("unused")
 public sealed abstract class Result<T> permits Err, Ok {
-    protected static Option<BiConsumer<String, Throwable>> errorSink = None.instance();
+    protected static BiConsumer<String, Throwable> errorSink;
 
     public static void setErrorSink(BiConsumer<String, Throwable> errorSink) {
         if (errorSink != null) {
-            Result.errorSink = Some.of(errorSink);
+            Result.errorSink = errorSink;
         }
     }
 
     protected static void sinkError(String message, Throwable error) {
-        errorSink.doOnSome(sink -> sink.accept(message, error));
+        if (errorSink != null) {
+            errorSink.accept(message, error);
+        }
     }
 
     /**
