@@ -21,21 +21,19 @@ public class NoneTest {
     @Test
     public void instantiation() {
         Option<String> none = None.instance();
-        assertFalse(none.isPresent());
         assertTrue(none instanceof None<String>);
+        assertFalse(none.isPresent());
     }
 
     @Test
     public void mapSome() {
         Option<String> mapped = None.instance().mapSome(prev -> "Some String");
-        assertFalse(mapped.isPresent());
         assertTrue(mapped instanceof None<String>);
     }
 
     @Test
     public void flatMapSome() {
         Option<String> mapped = None.instance().flatMapSome(prev -> Some.of("Some String"));
-        assertFalse(mapped.isPresent());
         assertTrue(mapped instanceof None<String>);
     }
 
@@ -43,26 +41,20 @@ public class NoneTest {
     public void mapNone() {
         //Null mapper
         Option<String> mapped = None.<String>instance().mapNone(null);
-        assertFalse(mapped.isPresent());
         assertTrue(mapped instanceof None<String>);
         //Null mapper return
         mapped = None.<String>instance().mapNone(() -> null);
-        assertFalse(mapped.isPresent());
         assertTrue(mapped instanceof None<String>);
         //Error mapper return
         AtomicBoolean errorThrown = new AtomicBoolean(false);
-        Option.setErrorSink((msg, err) -> {
-            errorThrown.set(true);
-        });
+        Option.setErrorSink((msg, err) -> errorThrown.set(true));
         mapped = None.<String>instance().mapNone(() -> {
             throw new RuntimeException("Error");
         });
-        assertFalse(mapped.isPresent());
         assertTrue(mapped instanceof None<String>);
         assertTrue(errorThrown.get());
         //Valid mapper return
         mapped = None.<String>instance().mapNone(() -> "Some String");
-        assertTrue(mapped.isPresent());
         assertTrue(mapped instanceof Some<String> someString && someString.getValue().equals("Some String"));
     }
 
@@ -70,26 +62,20 @@ public class NoneTest {
     public void flatMapNone() {
         //Null mapper
         Option<String> mapped = None.<String>instance().flatMapNone(null);
-        assertFalse(mapped.isPresent());
         assertTrue(mapped instanceof None<String>);
         //Null mapper return
         mapped = None.<String>instance().flatMapNone(() -> null);
-        assertFalse(mapped.isPresent());
         assertTrue(mapped instanceof None<String>);
         //Error mapper return
         AtomicBoolean errorThrown = new AtomicBoolean(false);
-        Option.setErrorSink((msg, err) -> {
-            errorThrown.set(true);
-        });
+        Option.setErrorSink((msg, err) -> errorThrown.set(true));
         mapped = None.<String>instance().flatMapNone(() -> {
             throw new RuntimeException("Error");
         });
-        assertFalse(mapped.isPresent());
         assertTrue(mapped instanceof None<String>);
         assertTrue(errorThrown.get());
         //Valid mapper return
         mapped = None.<String>instance().flatMapNone(() -> Some.of("Some String"));
-        assertTrue(mapped.isPresent());
         assertTrue(mapped instanceof Some<String> someString && someString.getValue().equals("Some String"));
     }
 
@@ -97,29 +83,19 @@ public class NoneTest {
     public void doOnNone() {
         None<String> none = None.instance();
         //Null supplier
-        try {
-            assertEquals(
-                    none.doOnNone(null),
-                    none
-            );
-        } catch (Exception e) {
-            fail();
-        }
+        assertEquals(
+                none.doOnNone(null),
+                none
+        );
         //Error supplier
         AtomicBoolean errorThrown = new AtomicBoolean(false);
-        Option.setErrorSink((msg, err) -> {
-            errorThrown.set(true);
-        });
-        try {
-            assertEquals(
-                    none.doOnNone(() -> {
-                        throw new RuntimeException("Error");
-                    }),
-                    none
-            );
-        } catch (Exception e) {
-            fail();
-        }
+        Option.setErrorSink((msg, err) -> errorThrown.set(true));
+        assertEquals(
+                none.doOnNone(() -> {
+                    throw new RuntimeException("Error");
+                }),
+                none
+        );
         assertTrue(errorThrown.get());
         //Valid supplier
         AtomicBoolean called = new AtomicBoolean(false);

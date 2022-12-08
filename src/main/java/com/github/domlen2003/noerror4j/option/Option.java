@@ -83,6 +83,7 @@ public sealed abstract class Option<T> permits None, Some {
             Option<U> result = mapper.apply(this);
             return result == null ? None.instance() : result;
         } catch (Throwable throwable) {
+            sinkError("Error thrown in mapper of Option.map(mapper)", throwable);
             return None.instance();
         }
     }
