@@ -112,16 +112,16 @@ public class NoneTest {
         //Valid supplier
         AtomicBoolean called = new AtomicBoolean(false);
         assertEquals(
-                none.doOnNone(() -> called.set(true)),
+                none.doOnSome(val -> called.set(true)),
                 none
         );
-        assertTrue(called.get());
+        assertFalse(called.get());
     }
 
     @Test
     public void asResult() {
         //None to error map
-        None<String> none = None.instance();
+        Option<String> none = None.instance();
         Result<String> result = none.asResult();
         assertTrue(result instanceof Err<String>);
     }
