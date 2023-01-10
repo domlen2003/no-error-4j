@@ -29,7 +29,7 @@ public class OptionTest {
         Option<String> option = Option.of(null);
         assertTrue(option instanceof None);
         //Null optional
-        Option<String> none = Option.of(Optional.ofNullable(null));
+        Option<String> none = Option.of(Optional.empty());
         assertTrue(none instanceof None);
         //Not null optional
         Option<String> some = Option.of(Optional.of("Some String"));
