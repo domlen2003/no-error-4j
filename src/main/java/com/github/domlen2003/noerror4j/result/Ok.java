@@ -87,7 +87,7 @@ public final class Ok<T> extends Result<T> {
             try {
                 consumer.accept(value);
             } catch (Throwable e) {
-              sinkError("Error thrown in consumer of Result.doOnOk(consumer)", e);
+                sinkError("Error thrown in consumer of Result.doOnOk(consumer)", e);
             }
         }
         return this;
@@ -104,5 +104,18 @@ public final class Ok<T> extends Result<T> {
     @Contract("-> true")
     public boolean isPresent() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        return obj instanceof Ok<?> other && value.equals(other.value);
+    }
+
+    @Override
+    public String toString() {
+        return "Ok[" + value + "]";
     }
 }

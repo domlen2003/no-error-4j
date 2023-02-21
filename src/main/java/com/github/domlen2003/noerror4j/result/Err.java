@@ -131,4 +131,17 @@ public final class Err<T> extends Result<T> {
     public boolean isPresent() {
         return false;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        return obj instanceof Err<?> other && error.equals(other.error);
+    }
+
+    @Override
+    public String toString() {
+        return "Err[" + error + "]";
+    }
 }

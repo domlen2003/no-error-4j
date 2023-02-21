@@ -88,7 +88,7 @@ public final class Some<T> extends Option<T> {
             try {
                 consumer.accept(value);
             } catch (Exception e) {
-               sinkError("Error thrown in consumer of Option.doOnSome(consumer)", e);
+                sinkError("Error thrown in consumer of Option.doOnSome(consumer)", e);
             }
         }
         return this;
@@ -112,5 +112,18 @@ public final class Some<T> extends Option<T> {
     @Contract("-> true")
     public boolean isPresent() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        return obj instanceof Some<?> other && value.equals(other.value);
+    }
+
+    @Override
+    public String toString() {
+        return "Some[" + value + "]";
     }
 }

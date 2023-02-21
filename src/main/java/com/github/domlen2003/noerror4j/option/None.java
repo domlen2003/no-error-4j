@@ -104,4 +104,17 @@ public final class None<T> extends Option<T> {
     public boolean isPresent() {
         return false;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        return obj instanceof None;
+    }
+
+    @Override
+    public String toString() {
+        return "None";
+    }
 }
