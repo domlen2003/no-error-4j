@@ -41,5 +41,9 @@ jobs:
       with:
         arguments: publish
       env:
-        USERNAME: ${{ github.actor }}
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_USERNAME: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        PGP_SECRET_KEY: ${{ secrets.PGP_SECRET }}
+        PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}

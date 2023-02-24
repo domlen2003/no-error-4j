@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * <h1>A Result type that can be used to return a value or an error</h1>
+ * A Result type that can be used to return a value or an error
  * <h2>A Result can be either a {@link Ok} or a {@link Err} which could be:</h2>
  * <h3>Checked with the isSuccess() method and then cast to the correct type</h3>
  * <pre>{@code

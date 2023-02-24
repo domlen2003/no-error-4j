@@ -14,7 +14,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * <h1>An Option type that can be used to return a value or nothing</h1>
+ * An Option type that can be used to return a value or nothing
  * <h2>An Option can be either a Some or a None which could be:</h2>
  * <h3>Checked with the isPresent() method and then cast to the correct type</h3>
  * <pre>{@code
